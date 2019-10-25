@@ -30,5 +30,8 @@
         "psr-4": {
             "Memory\\Test\\": "tests"
         }
+    },
+    "scripts": {
+        "phpunit": "php vendor/bin/phpunit"
     }
 }
