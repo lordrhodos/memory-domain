@@ -1,0 +1,34 @@
+{
+    "name": "lordrhodos/memory-domain",
+    "description": "Domain model for a memory game",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Patrick Rodacker",
+            "email": "patrick@rodacker.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.3",
+        "ramsey/uuid": "^4.0@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.4",
+        "roave/security-advisories": "dev-master"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Memory\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Memory\\Test\\": "tests"
+        }
+    }
+}
