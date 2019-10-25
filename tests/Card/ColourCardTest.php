@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class AudioCardTest extends TestCase
 {
-    private const CONTENT = 'http//foo.test/image.jpg';
+    private const CONTENT = 'green';
     private const TITLE = 'foo';
 
     public function testContentTypeIsImage(): void

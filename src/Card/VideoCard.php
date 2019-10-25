@@ -4,10 +4,10 @@ namespace Memory\Card;
 
 use Memory\Contracts\ContentTypes;
 
-class AudioCard extends Card
+class VideoCard extends Card
 {
     public function getContentType(): string
     {
-        return ContentTypes::AUDIO;
+        return ContentTypes::VIDEO;
     }
 }

@@ -2,52 +2,53 @@
 
 namespace Memory;
 
-use InvalidArgumentException;
+use Memory\Card\DecoratedCard;
+use Memory\Card\ImageCard;
+use Memory\Contracts\Card;
 
 class Pair
 {
-    private const REQUIRED_CARD_COUNT = 2;
+    /**
+     * @var DecoratedCard
+     */
+    private $firstCard;
 
     /**
-     * @var Card[]
+     * @var DecoratedCard
      */
-    private $cards;
+    private $secondCard;
 
-    public function __construct(Card ...$cards)
+    public function __construct(DecoratedCard $firstCard, DecoratedCard $secondCard)
     {
-        if ($this->isValidNumberOfCards(...$cards)) {
-            throw new InvalidArgumentException('A pair consists of exactly two cards.');
-        }
-
-        if (!$this->cardsHaveDifferentIds(...$cards)) {
-            throw new InvalidArgumentException('Cards can not have the same id.');
-        }
-
-        $this->setCards(...$cards);
+        $this->firstCard = $firstCard;
+        $this->secondCard = $secondCard;
     }
 
-    private function setCards(Card ...$cards): void
-    {
-        foreach ($cards as $card) {
-            $this->cards[$card->getId()] = $card;
-        }
-    }
-
+    /**
+     * @return DecoratedCard[]
+     */
     public function getCards(): array
     {
-        return $this->cards;
+        return [$this->firstCard, $this->secondCard];
     }
 
-    private function cardsHaveDifferentIds(Card ...$cards): bool
+    public function matchesIds(string $firstId, string $secondId): bool
     {
-        $firstCard = $cards[0];
-        $secondCard = $cards[1];
-
-        return $firstCard->getId() !== $secondCard->getId();
+        return $this->has($firstId) && $this->has($secondId);
     }
 
-    private function isValidNumberOfCards(Card ...$cards): bool
+    private function has(string $id): bool
     {
-        return count($cards) !== self::REQUIRED_CARD_COUNT;
+        return $this->firstCardMatchesId($id) || $this->secondCardMatchesId($id);
+    }
+
+    private function firstCardMatchesId(string $id): bool
+    {
+        return $this->firstCard->getId() === $id;
+    }
+
+    private function secondCardMatchesId(string $id): bool
+    {
+        return $this->secondCard->getId() === $id;
     }
 }

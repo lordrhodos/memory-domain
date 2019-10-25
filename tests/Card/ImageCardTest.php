@@ -2,7 +2,21 @@
 
 namespace Memory\Test\Card;
 
-class ImageCardTest
-{
+use Memory\Card\ImageCard;
+use Memory\Contracts\ContentTypes;
+use PHPUnit\Framework\TestCase;
 
+class ImageCardTest extends TestCase
+{
+    private const CONTENT = 'http//foo.test/image.jpg';
+    private const TITLE = 'foo';
+
+    public function testContentTypeIsImage(): void
+    {
+        $card = new ImageCard(self::TITLE, self::CONTENT);
+
+        $this->assertSame(self::TITLE, $card->getTitle());
+        $this->assertSame(self::CONTENT, $card->getContent());
+        $this->assertSame(ContentTypes::IMAGE, $card->getContentType());
+    }
 }

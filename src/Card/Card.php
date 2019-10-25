@@ -2,10 +2,10 @@
 
 namespace Memory\Card;
 
-use Memory\Contracts\Card;
+use Memory\Contracts\Card as CardContract;
 use Ramsey\Uuid\Uuid;
 
-class TextCard implements Card
+abstract class Card implements CardContract
 {
     /**
      * @var string
@@ -20,13 +20,18 @@ class TextCard implements Card
     /**
      * @var string
      */
-    private $image;
+    private $content;
 
-    public function __construct(string $title, string $image)
+    public function __construct(string $title, string $content)
     {
-        $this->uuid = Uuid::uuid4()->__toString();
+        $this->uuid = $this->createUniqueId();
         $this->title = $title;
-        $this->image = $image;
+        $this->content = $content;
+    }
+
+    private function createUniqueId(): string
+    {
+        return Uuid::uuid4()->__toString();
     }
 
     public function getId(): string
@@ -41,6 +46,8 @@ class TextCard implements Card
 
     public function getContent(): string
     {
-        return $this->image;
+        return $this->content;
     }
+
+    abstract public function getContentType(): string;
 }

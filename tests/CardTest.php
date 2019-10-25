@@ -2,26 +2,29 @@
 
 namespace Memory\Test;
 
-use Memory\Card;
+use Memory\Card\Card;
+use Memory\Card\ImageCard;
+use Memory\Contracts\Card as CardContract;
+use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class CardTest extends TestCase
 {
-    const IMAGE = 'https://placehold.it/120x120&text=image1';
     const TITLE = 'Card Title';
+    const IMAGE = 'https://placehold.it/120x120&text=image1';
 
     public function test_is_instantiable(): void
     {
-        $card = new Card(self::TITLE, self::IMAGE);
-        $this->assertInstanceOf(Card::class, $card);
+        $card = new ImageCard(self::TITLE, self::IMAGE);
+        $this->assertInstanceOf(ImageCard::class, $card);
     }
 
     public function test_each_card_returns_a_uuid_as_id(): void
     {
         $cardIds = [];
         for ($i = 0; $i < 1000; $i++) {
-            $card = new Card("Card Title {$i}", self::IMAGE);
+            $card = new ImageCard("Card Title {$i}", self::IMAGE);
             $uuid = $card->getId();
             $this->assertTrue(Uuid::isValid($uuid));
             $cardIds[] = $uuid;
@@ -35,9 +38,21 @@ class CardTest extends TestCase
     {
         $title = self::TITLE;
         $image = self::IMAGE;
-        $card = new Card($title, $image);
+        $card = new ImageCard($title, $image);
 
         $this->assertSame($title, $card->getTitle());
-        $this->assertSame($image, $card->getImage());
+        $this->assertSame($image, $card->getContent());
+    }
+
+    private function getCard(string $title): CardContract
+    {
+        $card = new class($title) extends Card {
+            public function getContentType(): string
+            {
+                return ContentTypes::IMAGE;
+            }
+        };
+
+        return $card;
     }
 }
