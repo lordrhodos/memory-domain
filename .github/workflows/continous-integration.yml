@@ -10,9 +10,6 @@ jobs:
       - name: Composer Install
         run: composer install --no-interaction --no-scripts --prefer-dist
 
-      - name: Lint & Code Style check
-        run: composer build-dist
-
       - name: Run Tests
-        run: composer phpunit
+        run: /vendor/bin/phpunit
 
