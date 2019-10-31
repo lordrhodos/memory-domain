@@ -15,8 +15,8 @@ class VideoCardTest extends TestCase
     {
         $card = new VideoCard(self::TITLE, self::CONTENT);
 
-        $this->assertSame(self::TITLE, $card->getTitle());
-        $this->assertSame(self::CONTENT, $card->getContent());
-        $this->assertSame(ContentTypes::VIDEO, $card->getContentType());
+        $this->assertSame(self::TITLE, $card->title());
+        $this->assertSame(self::CONTENT, $card->content());
+        $this->assertSame(ContentTypes::VIDEO, $card->contentType());
     }
 }

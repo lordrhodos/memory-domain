@@ -15,8 +15,8 @@ class ImageCardTest extends TestCase
     {
         $card = new ImageCard(self::TITLE, self::CONTENT);
 
-        $this->assertSame(self::TITLE, $card->getTitle());
-        $this->assertSame(self::CONTENT, $card->getContent());
-        $this->assertSame(ContentTypes::IMAGE, $card->getContentType());
+        $this->assertSame(self::TITLE, $card->title());
+        $this->assertSame(self::CONTENT, $card->content());
+        $this->assertSame(ContentTypes::IMAGE, $card->contentType());
     }
 }

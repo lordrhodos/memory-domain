@@ -4,6 +4,7 @@ namespace Memory;
 
 use InvalidArgumentException;
 use Memory\Card\ImageCard;
+use Ramsey\Uuid\Uuid;
 
 class Game
 {
@@ -49,5 +50,17 @@ class Game
         }
 
         return $cards;
+    }
+
+    public function makeMove(string $firstCardId, string $secondCardId): void
+    {
+        $this->validateCardIds($firstCardId, $secondCardId);
+    }
+
+    private function validateCardIds(string $firstCardId, string $secondCardId)
+    {
+        if (Uuid::isValid($firstCardId) || Uuid::isValid($secondCardId)) {
+            throw new InvalidArgumentException('ids need to be valid uuids');
+        }
     }
 }

@@ -3,11 +3,13 @@
 namespace Memory\Test;
 
 use InvalidArgumentException;
+use Memory\Card\CardId;
 use Memory\Card\DecoratedCard;
 use Memory\Card\ImageCard;
 use Memory\Game;
 use Memory\Pair;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GameTest extends TestCase
 {
@@ -56,16 +58,18 @@ class GameTest extends TestCase
 
     private function createPair(string $firstId, string $secondId): Pair
     {
+        $firstCardId = new CardId();
         $firstCard = $this->createCardMock($firstId);
+        $secondCardId = new CardId();
         $secondCard = $this->createCardMock($secondId);
 
-        return new Pair(new DecoratedCard($firstCard), new DecoratedCard($secondCard));
+        return new Pair(new DecoratedCard($firstCardId, $firstCard), new DecoratedCard($secondCardId, $secondCard));
     }
 
-    private function createCardMock(string $secondId): ImageCard
+    private function createCardMock(string $id): ImageCard
     {
         $mock = $this->createMock(ImageCard::class);
-        $mock->method('getId')->willReturn($secondId);
+        $mock->method('id')->willReturn(new CardId());
 
         return $mock;
     }
@@ -86,6 +90,17 @@ class GameTest extends TestCase
         $this->assertCount($game->getNumberOfCards(), $cards);
     }
 
+    public function test_make_move_with_invalid_first_card_id_throws_exception(): void
+    {
+        $firstPair = $this->createPair('foo', 'foo1');
+        $secondPair = $this->createPair('bar', 'bar1');
+        $game = new Game($firstPair, $secondPair);
+
+        $this->expectException(InvalidArgumentException::class);
+        $game->makeMove(Uuid::NIL, 'foo');
+    }
+
+
     private function createPairs(int $numberOfPairs): array
     {
         $pairs = [];
@@ -95,12 +110,14 @@ class GameTest extends TestCase
 
         return $pairs;
     }
+    
     private function createPairsWithSameCard(int $numberOfPairs): array
     {
+        $cardId = new CardId();
         $card = new ImageCard('a card', 'foo');
         $pairs = [];
         for ($i = 0; $i < $numberOfPairs; $i++) {
-            $pairs[] = new Pair(new DecoratedCard($card), new DecoratedCard($card));
+            $pairs[] = new Pair(new DecoratedCard($cardId, $card), new DecoratedCard($cardId, $card));
         }
 
         return $pairs;

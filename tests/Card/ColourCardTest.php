@@ -15,8 +15,8 @@ class AudioCardTest extends TestCase
     {
         $card = new AudioCard(self::TITLE, self::CONTENT);
 
-        $this->assertSame(self::TITLE, $card->getTitle());
-        $this->assertSame(self::CONTENT, $card->getContent());
-        $this->assertSame(ContentTypes::AUDIO, $card->getContentType());
+        $this->assertSame(self::TITLE, $card->title());
+        $this->assertSame(self::CONTENT, $card->content());
+        $this->assertSame(ContentTypes::AUDIO, $card->contentType());
     }
 }

@@ -25,7 +25,7 @@ class CardTest extends TestCase
         $cardIds = [];
         for ($i = 0; $i < 1000; $i++) {
             $card = new ImageCard("Card Title {$i}", self::IMAGE);
-            $uuid = $card->getId();
+            $uuid = $card->id();
             $this->assertTrue(Uuid::isValid($uuid));
             $cardIds[] = $uuid;
         }
@@ -40,14 +40,14 @@ class CardTest extends TestCase
         $image = self::IMAGE;
         $card = new ImageCard($title, $image);
 
-        $this->assertSame($title, $card->getTitle());
-        $this->assertSame($image, $card->getContent());
+        $this->assertSame($title, $card->title());
+        $this->assertSame($image, $card->content());
     }
 
     private function getCard(string $title): CardContract
     {
         $card = new class($title) extends Card {
-            public function getContentType(): string
+            public function contentType(): string
             {
                 return ContentTypes::IMAGE;
             }

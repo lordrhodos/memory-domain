@@ -6,7 +6,7 @@ use Memory\Contracts\ContentTypes;
 
 class ColourCard extends Card
 {
-    public function getContentType(): string
+    public function contentType(): string
     {
         return ContentTypes::COLOUR;
     }

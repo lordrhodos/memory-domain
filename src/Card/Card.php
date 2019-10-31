@@ -3,14 +3,13 @@
 namespace Memory\Card;
 
 use Memory\Contracts\Card as CardContract;
-use Ramsey\Uuid\Uuid;
 
 abstract class Card implements CardContract
 {
     /**
-     * @var string
+     * @var CardId
      */
-    private $uuid;
+    private $id;
 
     /**
      * @var string
@@ -24,30 +23,30 @@ abstract class Card implements CardContract
 
     public function __construct(string $title, string $content)
     {
-        $this->uuid = $this->createUniqueId();
+        $this->id = $this->createUniqueId();
         $this->title = $title;
         $this->content = $content;
     }
 
-    private function createUniqueId(): string
+    private function createUniqueId(): CardId
     {
-        return Uuid::uuid4()->__toString();
+        return new CardId();
     }
 
-    public function getId(): string
+    public function id(): CardId
     {
-        return $this->uuid;
+        return $this->id;
     }
 
-    public function getTitle(): string
+    public function title(): string
     {
         return $this->title;
     }
 
-    public function getContent(): string
+    public function content(): string
     {
         return $this->content;
     }
 
-    abstract public function getContentType(): string;
+    abstract public function contentType(): string;
 }

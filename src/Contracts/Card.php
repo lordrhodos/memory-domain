@@ -2,13 +2,15 @@
 
 namespace Memory\Contracts;
 
+use Memory\Card\CardId;
+
 interface Card
 {
-    public function getId(): string;
+    public function id(): CardId;
 
-    public function getTitle(): string;
+    public function title(): string;
 
-    public function getContent(): string;
+    public function content(): string;
 
-    public function getContentType(): string;
+    public function contentType(): string;
 }

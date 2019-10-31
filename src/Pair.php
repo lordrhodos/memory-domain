@@ -2,9 +2,10 @@
 
 namespace Memory;
 
+use Memory\Card\Card;
+use Memory\Card\CardId;
 use Memory\Card\DecoratedCard;
-use Memory\Card\ImageCard;
-use Memory\Contracts\Card;
+use Ramsey\Uuid\UuidInterface;
 
 class Pair
 {
@@ -32,23 +33,23 @@ class Pair
         return [$this->firstCard, $this->secondCard];
     }
 
-    public function matchesIds(string $firstId, string $secondId): bool
+    public function matchesIds(CardId $firstId, CardId $secondId): bool
     {
         return $this->has($firstId) && $this->has($secondId);
     }
 
-    private function has(string $id): bool
+    private function has(CardId $id): bool
     {
         return $this->firstCardMatchesId($id) || $this->secondCardMatchesId($id);
     }
 
-    private function firstCardMatchesId(string $id): bool
+    private function firstCardMatchesId(CardId $id): bool
     {
-        return $this->firstCard->getId() === $id;
+        return $this->firstCard->id() === $id;
     }
 
-    private function secondCardMatchesId(string $id): bool
+    private function secondCardMatchesId(CardId $id): bool
     {
-        return $this->secondCard->getId() === $id;
+        return $this->secondCard->id() === $id;
     }
 }

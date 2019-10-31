@@ -15,36 +15,36 @@ class DecoratedCard implements Card
     /**
      * @var string
      */
-    private $uuid;
+    private $id;
 
-    public function __construct(Card $card)
+    public function __construct(CardId $id, Card $card)
     {
+        $this->id = $id;
         $this->card = $card;
-        $this->uuid = Uuid::uuid4()->__toString();
     }
 
-    public function getId(): string
+    public function id(): CardId
     {
-        return $this->uuid;
+        return $this->id;
     }
 
-    public function getCardId(): string
+    public function cardId(): CardId
     {
-        return $this->card->getId();
+        return $this->card->id();
     }
 
-    public function getTitle(): string
+    public function title(): string
     {
-        return $this->card->getTitle();
+        return $this->card->title();
     }
 
-    public function getContent(): string
+    public function content(): string
     {
-        return $this->card->getContent();
+        return $this->card->content();
     }
 
-    public function getContentType(): string
+    public function contentType(): string
     {
-        return $this->card->getContentType();
+        return $this->card->contentType();
     }
 }

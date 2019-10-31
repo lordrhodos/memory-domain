@@ -2,6 +2,7 @@
 
 namespace Memory\Test\Card;
 
+use Memory\Card\CardId;
 use Memory\Card\ColourCard;
 use Memory\Card\DecoratedCard;
 use Memory\Contracts\ContentTypes;
@@ -15,26 +16,29 @@ class DecoratedCardTest extends TestCase
 
     public function test_get_card_id_returns_original_card_id(): void
     {
+        $cardId = new CardId();
         $card = new ColourCard(self::TITLE, self::CONTENT);
-        $decorated = new DecoratedCard($card);
-        $this->assertSame($card->getId(), $decorated->getCardId());
+        $decorated = new DecoratedCard($cardId, $card);
+        $this->assertSame($card->id(), $decorated->cardId());
     }
 
     public function test_get_id_returns_valid_uuid(): void
     {
+        $cardId = new CardId();
         $card = new ColourCard(self::TITLE, self::CONTENT);
-        $decorated = new DecoratedCard($card);
+        $decorated = new DecoratedCard($cardId, $card);
 
-        $this->assertTrue(Uuid::isValid($decorated->getId()));
+        $this->assertTrue(Uuid::isValid($decorated->id()));
     }
 
     public function test_proxy_methods(): void
     {
+        $cardId = new CardId();
         $card = new ColourCard(self::TITLE, self::CONTENT);
-        $decorated = new DecoratedCard($card);
+        $decorated = new DecoratedCard($cardId, $card);
 
-        $this->assertSame(self::TITLE, $decorated->getTitle());
-        $this->assertSame(self::CONTENT, $decorated->getContent());
-        $this->assertSame(ContentTypes::COLOUR, $decorated->getContentType());
+        $this->assertSame(self::TITLE, $decorated->title());
+        $this->assertSame(self::CONTENT, $decorated->content());
+        $this->assertSame(ContentTypes::COLOUR, $decorated->contentType());
     }
 }
