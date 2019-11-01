@@ -2,7 +2,7 @@
 composer.lock
 vendor
 
-build/test-coverage/
+build/*
 
 .phpunit.result.cache
 .phpunit.xml
