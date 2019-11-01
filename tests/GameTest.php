@@ -118,10 +118,12 @@ class GameTest extends TestCase
     private function createPairsWithSameCard(int $numberOfPairs): array
     {
         $cardId = new CardId();
-        $card = new ImageContent('a card', 'foo');
+        $contentId = new ContentId();
+        $content = new ImageContent($contentId, 'a card', 'foo');
         $pairs = [];
         for ($i = 0; $i < $numberOfPairs; $i++) {
-            $pairs[] = new Pair(new Card($cardId, $card), new Card($cardId, $card));
+            $card = new Card($cardId, $content);
+            $pairs[] = new Pair($card, $card);
         }
 
         return $pairs;

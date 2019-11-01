@@ -2,6 +2,7 @@
 
 namespace Memory\Test\Card\Content;
 
+use Memory\Card\Content\ContentId;
 use Memory\Card\Content\ImageContent;
 use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,8 @@ class ImageContentTest extends TestCase
 
     public function testContentTypeIsImage(): void
     {
-        $card = new ImageContent(self::TITLE, self::CONTENT);
+        $contentId = new ContentId();
+        $card = new ImageContent($contentId, self::TITLE, self::CONTENT);
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());

@@ -3,6 +3,7 @@
 namespace Memory\Test\Card\Content;
 
 use Memory\Card\Content\AudioContent;
+use Memory\Card\Content\ContentId;
 use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +14,8 @@ class ColourContentTest extends TestCase
 
     public function testContentTypeIsImage(): void
     {
-        $card = new AudioContent(self::TITLE, self::CONTENT);
+        $contentId = new ContentId();
+        $card = new AudioContent($contentId, self::TITLE, self::CONTENT);
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());

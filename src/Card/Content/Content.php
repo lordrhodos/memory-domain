@@ -21,16 +21,11 @@ abstract class Content implements CardContract
      */
     private $content;
 
-    public function __construct(string $title, string $content)
+    public function __construct(ContentId $id, string $title, string $content)
     {
-        $this->id = $this->createUniqueId();
+        $this->id = $id;
         $this->title = $title;
         $this->content = $content;
-    }
-
-    private function createUniqueId(): ContentId
-    {
-        return new ContentId();
     }
 
     public function id(): ContentId

@@ -1,58 +1,52 @@
 <?php declare(strict_types=1);
 
-namespace Memory\Test\Card;
+namespace Memory\Test\Card\Card;
 
-use Memory\Card\Content\Content;
-use Memory\Card\Content\ImageContent;
-use Memory\Contracts\Content as CardContract;
+use Memory\Card\CardId;
+use Memory\Card\Content\ColourContent;
+use Memory\Card\Card;
+use Memory\Card\Content\ContentId;
 use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class CardTest extends TestCase
 {
-    const TITLE = 'Card Title';
-    const IMAGE = 'https://placehold.it/120x120&text=image1';
+    private const TITLE = 'foo';
+    private const CONTENT = 'red';
 
-    public function test_is_instantiable(): void
+    public function test_get_content_id_returns_original_content_id(): void
     {
-        $card = new ImageContent(self::TITLE, self::IMAGE);
-        $this->assertInstanceOf(ImageContent::class, $card);
+        $contentId = new ContentId();
+        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
+
+        $cardId = new CardId();
+        $card = new Card($cardId, $content);
+        $this->assertSame($cardId, $card->id());
+        $this->assertSame($contentId, $card->contentId());
     }
 
-    public function test_each_card_returns_a_uuid_as_id(): void
+    public function test_get_id_returns_valid_uuid(): void
     {
-        $cardIds = [];
-        for ($i = 0; $i < 1000; $i++) {
-            $card = new ImageContent("Card Title {$i}", self::IMAGE);
-            $uuid = $card->id();
-            $this->assertTrue(Uuid::isValid($uuid));
-            $cardIds[] = $uuid;
-        }
+        $contentId = new ContentId();
+        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
 
-        $unique = array_unique($cardIds);
-        $this->assertSame($cardIds,$unique);
+        $cardId = new CardId();
+        $card = new Card($cardId, $content);
+
+        $this->assertTrue(Uuid::isValid($card->id()));
     }
 
-    public function test_card_requires_name_and_image_url_on_creation()
+    public function test_proxy_methods(): void
     {
-        $title = self::TITLE;
-        $image = self::IMAGE;
-        $card = new ImageContent($title, $image);
+        $contentId = new ContentId();
+        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
 
-        $this->assertSame($title, $card->title());
-        $this->assertSame($image, $card->content());
-    }
+        $cardId = new CardId();
+        $card = new Card($cardId, $content);
 
-    private function getCard(string $title): CardContract
-    {
-        $card = new class($title) extends Content {
-            public function contentType(): string
-            {
-                return ContentTypes::IMAGE;
-            }
-        };
-
-        return $card;
+        $this->assertSame(self::TITLE, $card->title());
+        $this->assertSame(self::CONTENT, $card->content());
+        $this->assertSame(ContentTypes::COLOUR, $card->contentType());
     }
 }

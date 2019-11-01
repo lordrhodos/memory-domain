@@ -2,43 +2,52 @@
 
 namespace Memory\Test\Card\Content;
 
-use Memory\Card\CardId;
-use Memory\Card\Content\ColourContent;
-use Memory\Card\Card;
+use Memory\Card\Content\Content;
+use Memory\Card\Content\ContentId;
+use Memory\Card\Content\ImageContent;
+use Memory\Contracts\Content as CardContract;
 use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class ContentTest extends TestCase
 {
-    private const TITLE = 'foo';
-    private const CONTENT = 'red';
+    const TITLE = 'Card Title';
+    const CONTENT = 'https://placehold.it/120x120&text=image1';
 
-    public function test_get_card_id_returns_original_card_id(): void
+    public function test_is_instantiable(): void
     {
-        $cardId = new CardId();
-        $card = new ColourContent(self::TITLE, self::CONTENT);
-        $decorated = new Card($cardId, $card);
-        $this->assertSame($card->id(), $decorated->contentId());
+        $content = $this->createContent();
+        $this->assertInstanceOf(ImageContent::class, $content);
     }
 
-    public function test_get_id_returns_valid_uuid(): void
+    public function test_each_content_returns_a_uuid_as_id(): void
     {
-        $cardId = new CardId();
-        $card = new ColourContent(self::TITLE, self::CONTENT);
-        $decorated = new Card($cardId, $card);
+        $contentIds = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $content = $this->createContent();
+            $uuid = $content->id();
+            $this->assertTrue(Uuid::isValid($uuid));
+            $contentIds[] = $uuid;
+        }
 
-        $this->assertTrue(Uuid::isValid($decorated->id()));
+        $unique = array_unique($contentIds);
+        $this->assertSame($contentIds, $unique);
     }
 
-    public function test_proxy_methods(): void
+    public function test_content_requires_name_and_image_url_on_creation()
     {
-        $cardId = new CardId();
-        $card = new ColourContent(self::TITLE, self::CONTENT);
-        $decorated = new Card($cardId, $card);
+        $content = $this->createContent();
 
-        $this->assertSame(self::TITLE, $decorated->title());
-        $this->assertSame(self::CONTENT, $decorated->content());
-        $this->assertSame(ContentTypes::COLOUR, $decorated->contentType());
+        $this->assertSame(self::TITLE, $content->title());
+        $this->assertSame(self::CONTENT, $content->content());
+    }
+
+    private function createContent(): ImageContent
+    {
+        $contentId = new ContentId();
+        $content = new ImageContent($contentId, self::TITLE, self::CONTENT);
+
+        return $content;
     }
 }
