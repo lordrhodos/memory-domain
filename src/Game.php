@@ -21,6 +21,10 @@ class Game
             throw new InvalidArgumentException('you need to define at least two pair of cards to create a game');
         }
 
+        if ($this->containsDuplicateCard(...$pairs)) {
+            throw new InvalidArgumentException('duplicate card detected');
+        }
+
         $this->pairs = $pairs;
     }
 
@@ -62,5 +66,22 @@ class Game
         if (Uuid::isValid($firstCardId) || Uuid::isValid($secondCardId)) {
             throw new InvalidArgumentException('ids need to be valid uuids');
         }
+    }
+
+    private function containsDuplicateCard(Pair ...$pairs): bool
+    {
+        $ids = [];
+        foreach ($pairs as $pair) {
+            foreach ($pair->getCards() as $card) {
+                $cardId = $card->id()->id();
+                if (in_array($cardId, $ids)) {
+                    return true;
+                }
+
+                $ids[] = $cardId;
+            }
+        }
+
+        return false;
     }
 }

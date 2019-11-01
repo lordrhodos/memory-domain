@@ -86,12 +86,13 @@ class GameTest extends TestCase
         $this->assertCount($game->getNumberOfCards(), $cards);
     }
 
-    public function test_get_cards_using_same_cards(): void
+    public function test_duplicate_cards_throw_exception(): void
     {
         $pairs = $this->createPairsWithSameCard(4);
-        $game = new Game(...$pairs);
-        $cards = $game->getCards();
-        $this->assertCount($game->getNumberOfCards(), $cards);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('duplicate card detected');
+        new Game(...$pairs);
     }
 
     public function test_make_move_with_invalid_first_card_id_throws_exception(): void
