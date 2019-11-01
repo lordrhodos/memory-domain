@@ -2,31 +2,31 @@
 
 namespace Memory;
 
-use Memory\Card\Card;
+use Memory\Card\Content\Content;
 use Memory\Card\CardId;
-use Memory\Card\DecoratedCard;
+use Memory\Card\Card;
 use Ramsey\Uuid\UuidInterface;
 
 class Pair
 {
     /**
-     * @var DecoratedCard
+     * @var Card
      */
     private $firstCard;
 
     /**
-     * @var DecoratedCard
+     * @var Card
      */
     private $secondCard;
 
-    public function __construct(DecoratedCard $firstCard, DecoratedCard $secondCard)
+    public function __construct(Card $firstCard, Card $secondCard)
     {
         $this->firstCard = $firstCard;
         $this->secondCard = $secondCard;
     }
 
     /**
-     * @return DecoratedCard[]
+     * @return Card[]
      */
     public function getCards(): array
     {

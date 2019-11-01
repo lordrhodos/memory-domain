@@ -4,8 +4,9 @@ namespace Memory\Test;
 
 use InvalidArgumentException;
 use Memory\Card\CardId;
-use Memory\Card\DecoratedCard;
-use Memory\Card\ImageCard;
+use Memory\Card\Card;
+use Memory\Card\Content\ContentId;
+use Memory\Card\Content\ImageContent;
 use Memory\Game;
 use Memory\Pair;
 use PHPUnit\Framework\TestCase;
@@ -15,8 +16,8 @@ class GameTest extends TestCase
 {
     public function test_is_instantiable(): void
     {
-        $firstPair = $this->createPair('foo', 'foo1');
-        $secondPair = $this->createPair('bar', 'bar1');
+        $firstPair = $this->createPair($this->createUuid(), $this->createUuid());
+        $secondPair = $this->createPair($this->createUuid(), $this->createUuid());
         $game = new Game($firstPair, $secondPair);
         $this->assertInstanceOf(Game::class, $game);
     }
@@ -28,7 +29,7 @@ class GameTest extends TestCase
     {
         $pairs = [];
         for ($index = $numberOfPairs; $index > 0; $index--) {
-            $pairs[] = $this->createPair(uniqid(), uniqid());
+            $pairs[] = $this->createPair($this->createUuid(), $this->createUuid());
         }
 
         if ($numberOfPairs < 2) {
@@ -59,17 +60,20 @@ class GameTest extends TestCase
     private function createPair(string $firstId, string $secondId): Pair
     {
         $firstCardId = new CardId();
-        $firstCard = $this->createCardMock($firstId);
+        $firstContent = $this->createContentMock($firstId);
         $secondCardId = new CardId();
-        $secondCard = $this->createCardMock($secondId);
+        $secondContent = $this->createContentMock($secondId);
 
-        return new Pair(new DecoratedCard($firstCardId, $firstCard), new DecoratedCard($secondCardId, $secondCard));
+        $firstCard = new Card($firstCardId, $firstContent);
+        $secondCard = new Card($secondCardId, $secondContent);
+
+        return new Pair($firstCard, $secondCard);
     }
 
-    private function createCardMock(string $id): ImageCard
+    private function createContentMock(string $id): ImageContent
     {
-        $mock = $this->createMock(ImageCard::class);
-        $mock->method('id')->willReturn(new CardId());
+        $mock = $this->createMock(ImageContent::class);
+        $mock->method('id')->willReturn(ContentId::fromString($id));
 
         return $mock;
     }
@@ -92,8 +96,8 @@ class GameTest extends TestCase
 
     public function test_make_move_with_invalid_first_card_id_throws_exception(): void
     {
-        $firstPair = $this->createPair('foo', 'foo1');
-        $secondPair = $this->createPair('bar', 'bar1');
+        $firstPair = $this->createPair($this->createUuid(), $this->createUuid());
+        $secondPair = $this->createPair($this->createUuid(), $this->createUuid());
         $game = new Game($firstPair, $secondPair);
 
         $this->expectException(InvalidArgumentException::class);
@@ -105,7 +109,7 @@ class GameTest extends TestCase
     {
         $pairs = [];
         for ($i = 0; $i < $numberOfPairs; $i++) {
-            $pairs[] = $this->createPair("Card {$i}1", "Card {$i}2");
+            $pairs[] = $this->createPair($this->createUuid(), $this->createUuid());
         }
 
         return $pairs;
@@ -114,12 +118,17 @@ class GameTest extends TestCase
     private function createPairsWithSameCard(int $numberOfPairs): array
     {
         $cardId = new CardId();
-        $card = new ImageCard('a card', 'foo');
+        $card = new ImageContent('a card', 'foo');
         $pairs = [];
         for ($i = 0; $i < $numberOfPairs; $i++) {
-            $pairs[] = new Pair(new DecoratedCard($cardId, $card), new DecoratedCard($cardId, $card));
+            $pairs[] = new Pair(new Card($cardId, $card), new Card($cardId, $card));
         }
 
         return $pairs;
+    }
+
+    private function createUuid(): string
+    {
+        return Uuid::uuid4()->__toString();
     }
 }

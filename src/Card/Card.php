@@ -2,35 +2,26 @@
 
 namespace Memory\Card;
 
+use Memory\Card\Content\ContentId;
+use Memory\Contracts\Content;
 use Memory\Contracts\Card as CardContract;
 
-abstract class Card implements CardContract
+class Card implements CardContract
 {
     /**
-     * @var CardId
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
+     * @var Content
      */
     private $content;
 
-    public function __construct(string $title, string $content)
-    {
-        $this->id = $this->createUniqueId();
-        $this->title = $title;
-        $this->content = $content;
-    }
+    /**
+     * @var string
+     */
+    private $id;
 
-    private function createUniqueId(): CardId
+    public function __construct(CardId $id, Content $content)
     {
-        return new CardId();
+        $this->id = $id;
+        $this->content = $content;
     }
 
     public function id(): CardId
@@ -38,15 +29,23 @@ abstract class Card implements CardContract
         return $this->id;
     }
 
+    public function contentId(): ContentId
+    {
+        return $this->content->id();
+    }
+
     public function title(): string
     {
-        return $this->title;
+        return $this->content->title();
     }
 
     public function content(): string
     {
-        return $this->content;
+        return $this->content->content();
     }
 
-    abstract public function contentType(): string;
+    public function contentType(): string
+    {
+        return $this->content->contentType();
+    }
 }

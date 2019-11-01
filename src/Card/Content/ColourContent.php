@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Memory\Card;
+namespace Memory\Card\Content;
 
+use Memory\Card\Content\Content;
 use Memory\Contracts\ContentTypes;
 
-class ColourCard extends Card
+class ColourContent extends Content
 {
     public function contentType(): string
     {

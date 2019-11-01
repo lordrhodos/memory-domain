@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace Memory\Test\Card;
+namespace Memory\Test\Card\Content;
 
-use Memory\Card\ColourCard;
+use Memory\Card\Content\ImageContent;
 use Memory\Contracts\ContentTypes;
 use PHPUnit\Framework\TestCase;
 
-class ColourCardTest extends TestCase
+class ImageContentTest extends TestCase
 {
     private const CONTENT = 'http//foo.test/image.jpg';
     private const TITLE = 'foo';
 
     public function testContentTypeIsImage(): void
     {
-        $card = new ColourCard(self::TITLE, self::CONTENT);
+        $card = new ImageContent(self::TITLE, self::CONTENT);
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());
-        $this->assertSame(ContentTypes::COLOUR, $card->contentType());
+        $this->assertSame(ContentTypes::IMAGE, $card->contentType());
     }
 }

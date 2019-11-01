@@ -8,9 +8,5 @@ interface Card
 {
     public function id(): CardId;
 
-    public function title(): string;
-
     public function content(): string;
-
-    public function contentType(): string;
 }

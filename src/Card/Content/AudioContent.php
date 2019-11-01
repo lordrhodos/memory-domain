@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Memory\Card;
+namespace Memory\Card\Content;
 
 use Memory\Contracts\ContentTypes;
 
-class VideoCard extends Card
+class AudioContent extends Content
 {
     public function contentType(): string
     {
-        return ContentTypes::VIDEO;
+        return ContentTypes::AUDIO;
     }
 }

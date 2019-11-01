@@ -3,7 +3,7 @@
 namespace Memory;
 
 use InvalidArgumentException;
-use Memory\Card\ImageCard;
+use Memory\Card\Content\ImageContent;
 use Ramsey\Uuid\Uuid;
 
 class Game
@@ -40,7 +40,7 @@ class Game
     }
 
     /**
-     * @return ImageCard[]
+     * @return ImageContent[]
      */
     public function getCards(): array
     {
