@@ -6,7 +6,7 @@ use Memory\Contracts\ContentTypes;
 
 class AudioContent extends Content
 {
-    public function contentType(): string
+    public function type(): string
     {
         return ContentTypes::AUDIO;
     }

@@ -7,7 +7,7 @@ use Memory\Contracts\ContentTypes;
 
 class ColourContent extends Content
 {
-    public function contentType(): string
+    public function type(): string
     {
         return ContentTypes::COLOUR;
     }

@@ -46,6 +46,6 @@ class Card implements CardContract
 
     public function contentType(): string
     {
-        return $this->content->contentType();
+        return $this->content->type();
     }
 }

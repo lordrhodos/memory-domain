@@ -12,5 +12,5 @@ interface Content
 
     public function content(): string;
 
-    public function contentType(): string;
+    public function type(): string;
 }

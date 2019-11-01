@@ -43,5 +43,5 @@ abstract class Content implements CardContract
         return $this->content;
     }
 
-    abstract public function contentType(): string;
+    abstract public function type(): string;
 }

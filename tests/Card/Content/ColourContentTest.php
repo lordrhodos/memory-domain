@@ -19,6 +19,6 @@ class ColourContentTest extends TestCase
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());
-        $this->assertSame(ContentTypes::AUDIO, $card->contentType());
+        $this->assertSame(ContentTypes::AUDIO, $card->type());
     }
 }

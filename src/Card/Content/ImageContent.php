@@ -7,7 +7,7 @@ use Memory\Contracts\ContentTypes;
 
 class ImageContent extends Content
 {
-    public function contentType(): string
+    public function type(): string
     {
         return ContentTypes::IMAGE;
     }

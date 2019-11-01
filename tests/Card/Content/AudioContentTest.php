@@ -19,6 +19,6 @@ class AudioContentTest extends TestCase
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());
-        $this->assertSame(ContentTypes::VIDEO, $card->contentType());
+        $this->assertSame(ContentTypes::VIDEO, $card->type());
     }
 }

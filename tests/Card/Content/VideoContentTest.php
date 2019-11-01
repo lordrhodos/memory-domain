@@ -19,6 +19,6 @@ class VideoContentTest extends TestCase
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());
-        $this->assertSame(ContentTypes::COLOUR, $card->contentType());
+        $this->assertSame(ContentTypes::COLOUR, $card->type());
     }
 }

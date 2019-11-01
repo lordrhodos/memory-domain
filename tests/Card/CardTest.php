@@ -15,7 +15,7 @@ class CardTest extends TestCase
     private const TITLE = 'foo';
     private const CONTENT = 'red';
 
-    public function test_get_content_id_returns_original_content_id(): void
+    public function test_get_ids(): void
     {
         $contentId = new ContentId();
         $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
