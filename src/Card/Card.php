@@ -9,14 +9,14 @@ use Memory\Contracts\Card as CardContract;
 class Card implements CardContract
 {
     /**
-     * @var Content
-     */
-    private $content;
-
-    /**
      * @var string
      */
     private $id;
+
+    /**
+     * @var Content
+     */
+    private $content;
 
     public function __construct(CardId $id, Content $content)
     {
