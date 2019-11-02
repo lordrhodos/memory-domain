@@ -25,6 +25,11 @@ class Game
      */
     private $matchedCards;
 
+    /**
+     * @var Card[]
+     */
+    private $unmatchedCards;
+
     public function __construct(Pair ...$pairs)
     {
         if (count($pairs) < 2) {
@@ -38,6 +43,7 @@ class Game
         $this->pairs = $pairs;
         $this->cards = $this->getCardsFromPairs(...$pairs);
         $this->matchedCards = [];
+        $this->unmatchedCards = $this->cards;
     }
 
     public function getNumberOfCards(): int
@@ -66,6 +72,11 @@ class Game
     public function matchedCards(): array
     {
         return $this->matchedCards;
+    }
+
+    public function unmatchedCards(): array
+    {
+        return $this->unmatchedCards;
     }
 
     public function makeMove(string $firstCardId, string $secondCardId): void

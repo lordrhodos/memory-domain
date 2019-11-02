@@ -115,6 +115,15 @@ class GameTest extends TestCase
         $this->assertEmpty($game->matchedCards());
     }
 
+    public function test_unmatched_cards_equals_cards_on_start(): void
+    {
+        $pairs = $this->createPairs(4);
+        $game = new Game(...$pairs);
+
+        $this->assertCount(8, $game->cards());
+        $this->assertSame($game->cards(), $game->unmatchedCards());
+    }
+
     private function createPairs(int $numberOfPairs): array
     {
         $pairs = [];
