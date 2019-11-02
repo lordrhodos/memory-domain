@@ -84,17 +84,19 @@ class Game
         $this->validateCardIds($firstCardId, $secondCardId);
 
         if ($this->cardsMatch($firstCardId, $secondCardId)) {
-            $this->removeFromUnmatched($firstCardId, $secondCardId);
-            $this->addCardsToMatched($firstCardId, $secondCardId);
+            $this->shiftCards($firstCardId, $secondCardId);
+
+            return true;
         }
 
         return false;
     }
 
-    private function validateCardIds(string $firstCardId, string $secondCardId)
+    private function validateCardIds(string $firstCardId, string $secondCardId): void
     {
         $this->idsAreValidUuids($firstCardId, $secondCardId);
         $this->idsExist($firstCardId, $secondCardId);
+        $this->idsAreUnmatched($firstCardId, $secondCardId);
     }
 
     private function containsDuplicateCard(Pair ...$pairs): bool
@@ -166,12 +168,21 @@ class Game
         }
     }
 
-    private function idsExist(string $firstCardId, string $secondCardId)
+    private function idsExist(string $firstCardId, string $secondCardId): void
     {
-        return array_key_exists($firstCardId, $this->cards) && array_key_exists($secondCardId, $this->cards);
+        if (!$this->idExists($firstCardId) || !$this->idExists($secondCardId)) {
+            throw new InvalidArgumentException("one or both ids do not exist");
+        }
     }
 
-    private function removeFromUnmatched(string $firstCardId, string $secondCardId): void
+    private function idsAreUnmatched(string $firstCardId, string $secondCardId): void
+    {
+        if (!$this->idIsUnmatched($firstCardId) || !$this->idIsUnmatched($secondCardId)) {
+            throw new InvalidArgumentException("one or both ids are matched already");
+        }
+    }
+
+    private function removeCardsFromUnmatched(string $firstCardId, string $secondCardId): void
     {
         unset($this->unmatchedCards[$firstCardId]);
         unset($this->unmatchedCards[$secondCardId]);
@@ -187,5 +198,21 @@ class Game
     {
         $card = $this->cards[$cardId];
         $this->matchedCards[$cardId] = $card;
+    }
+
+    private function shiftCards(string $firstCardId, string $secondCardId): void
+    {
+        $this->removeCardsFromUnmatched($firstCardId, $secondCardId);
+        $this->addCardsToMatched($firstCardId, $secondCardId);
+    }
+
+    private function idIsUnmatched(string $firstCardId): bool
+    {
+        return array_key_exists($firstCardId, $this->unmatchedCards);
+    }
+
+    private function idExists(string $cardId)
+    {
+        return array_key_exists($cardId, $this->cards);
     }
 }

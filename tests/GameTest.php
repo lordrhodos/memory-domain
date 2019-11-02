@@ -61,10 +61,10 @@ class GameTest extends TestCase
     {
         $firstCardId = new CardId();
         $firstContent = $this->createContentMock($firstId);
+        $firstCard = new Card($firstCardId, $firstContent);
+
         $secondCardId = new CardId();
         $secondContent = $this->createContentMock($secondId);
-
-        $firstCard = new Card($firstCardId, $firstContent);
         $secondCard = new Card($secondCardId, $secondContent);
 
         return new Pair($firstCard, $secondCard);
@@ -96,7 +96,7 @@ class GameTest extends TestCase
         new Game(...$duplicated);
     }
 
-    public function test_make_move_with_invalid_first_card_id_throws_exception(): void
+    public function test_make_move_with_invalid_card_id_throws_exception(): void
     {
         $firstPair = $this->createPair($this->createUuid(), $this->createUuid());
         $secondPair = $this->createPair($this->createUuid(), $this->createUuid());
@@ -104,6 +104,82 @@ class GameTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $game->makeMove(Uuid::NIL, 'foo');
+    }
+
+    public function test_make_move_with_non_existing_id_throws_exception(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+
+        $this->expectException(InvalidArgumentException::class);
+        $nil = Uuid::NIL;
+        $this->expectExceptionMessage('one or both ids do not exist');
+        $game->makeMove($nil, $nil);
+    }
+
+    public function test_make_move_with_matching_card_ids_returns_true(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+
+        $pair = $pairs[0];
+        [$firstCard, $secondCard] = $pair->getCards();
+        $firstId = $firstCard->id()->__toString();
+        $secondId = $secondCard->id()->__toString();
+
+        $secondPair = $pairs[1];
+        [$thirdCard, $fourthCard] = $secondPair->getCards();
+        $thirdId = $thirdCard->id()->__toString();
+        $fourthId = $fourthCard->id()->__toString();
+
+        $success = $game->makeMove($firstId, $secondId);
+        $this->assertTrue($success);
+
+        $secondSuccess = $game->makeMove($fourthId, $thirdId);
+        $this->assertTrue($secondSuccess);
+    }
+
+    public function test_make_move_with_matched_card_id_throws_exception(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+
+        $pair = current($pairs);
+        [$firstCard, $secondCard] = $pair->getCards();
+        $firstId = $firstCard->id()->__toString();
+        $secondId = $secondCard->id()->__toString();
+
+        $success = $game->makeMove($firstId, $secondId);
+        $this->assertTrue($success);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('one or both ids are matched already');
+        $game->makeMove($firstId, $secondId);
+    }
+
+    public function test_make_move_with_not_matching_card_ids_returns_false(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+
+        $firstPair = $pairs[0];
+        [$firstCard, $secondCard] = $firstPair->getCards();
+        $firstId = $firstCard->id()->__toString();
+        $secondId = $secondCard->id()->__toString();
+
+        $secondPair = $pairs[1];
+        [$thirdCard, $fourthCard] = $secondPair->getCards();
+        $thirdId = $thirdCard->id()->__toString();
+        $fourthId = $fourthCard->id()->__toString();
+
+        $firstMismatch = $game->makeMove($firstId, $thirdId);
+        $this->assertFalse($firstMismatch);
+
+        $secondMismatch = $game->makeMove($firstId, $fourthId);
+        $this->assertFalse($secondMismatch);
+
+        $thirdMismatch = $game->makeMove($secondId, $thirdId);
+        $this->assertFalse($thirdMismatch);
     }
 
     public function test_matched_cards_are_empty_on_start(): void
