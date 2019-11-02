@@ -82,7 +82,7 @@ class GameTest extends TestCase
     {
         $pairs = $this->createPairs(4);
         $game = new Game(...$pairs);
-        $cards = $game->getCards();
+        $cards = $game->cards();
         $this->assertCount($game->getNumberOfCards(), $cards);
     }
 
@@ -104,6 +104,15 @@ class GameTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $game->makeMove(Uuid::NIL, 'foo');
+    }
+
+    public function test_matched_cards_are_empty_on_start(): void
+    {
+        $pairs = $this->createPairs(4);
+        $game = new Game(...$pairs);
+
+        $this->assertCount(8, $game->cards());
+        $this->assertEmpty($game->matchedCards());
     }
 
     private function createPairs(int $numberOfPairs): array

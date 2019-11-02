@@ -3,7 +3,7 @@
 namespace Memory;
 
 use InvalidArgumentException;
-use Memory\Card\Content\ImageContent;
+use Memory\Contracts\Card;
 use Ramsey\Uuid\Uuid;
 
 class Game
@@ -14,6 +14,16 @@ class Game
      * @var Pair[]
      */
     private $pairs;
+
+    /**
+     * @var Card[]
+     */
+    private $cards;
+
+    /**
+     * @var Card[]
+     */
+    private $matchedCards;
 
     public function __construct(Pair ...$pairs)
     {
@@ -26,6 +36,8 @@ class Game
         }
 
         $this->pairs = $pairs;
+        $this->cards = $this->getCardsFromPairs(...$pairs);
+        $this->matchedCards = [];
     }
 
     public function getNumberOfCards(): int
@@ -44,16 +56,16 @@ class Game
     }
 
     /**
-     * @return ImageContent[]
+     * @return Card[]
      */
-    public function getCards(): array
+    public function cards(): array
     {
-        $cards = [];
-        foreach ($this->pairs as $pair) {
-            $cards = array_merge($cards, $pair->getCards());
-        }
+        return $this->cards;
+    }
 
-        return $cards;
+    public function matchedCards(): array
+    {
+        return $this->matchedCards;
     }
 
     public function makeMove(string $firstCardId, string $secondCardId): void
@@ -83,5 +95,21 @@ class Game
         }
 
         return false;
+    }
+
+    /**
+     * @return Card[]
+     */
+    private function getCardsFromPairs(Pair ...$pairs): array
+    {
+        $cards = [];
+        foreach ($pairs as $pair) {
+            foreach ($pair->getCards() as $card) {
+                $cardId = $card->id()->__toString();
+                $cards[$cardId] = $card;
+            }
+        }
+
+        return $cards;
     }
 }
