@@ -106,7 +106,6 @@ class GameTest extends TestCase
         $game->makeMove(Uuid::NIL, 'foo');
     }
 
-
     private function createPairs(int $numberOfPairs): array
     {
         $pairs = [];
