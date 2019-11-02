@@ -11,7 +11,7 @@ class Game
     private const DEFAULT_NUMBER_OF_CARDS = 16;
 
     /**
-     * @var Pair[]
+     * @var string[]
      */
     private $pairs;
 
@@ -40,7 +40,7 @@ class Game
             throw new InvalidArgumentException('duplicate card detected');
         }
 
-        $this->pairs = $pairs;
+        $this->pairs = $this->getPairedIds(...$pairs);
         $this->cards = $this->getCardsFromPairs(...$pairs);
         $this->matchedCards = [];
         $this->unmatchedCards = $this->cards;
@@ -79,16 +79,22 @@ class Game
         return $this->unmatchedCards;
     }
 
-    public function makeMove(string $firstCardId, string $secondCardId): void
+    public function makeMove(string $firstCardId, string $secondCardId): bool
     {
         $this->validateCardIds($firstCardId, $secondCardId);
+
+        if ($this->cardsMatch($firstCardId, $secondCardId)) {
+            $this->removeFromUnmatched($firstCardId, $secondCardId);
+            $this->addCardsToMatched($firstCardId, $secondCardId);
+        }
+
+        return false;
     }
 
     private function validateCardIds(string $firstCardId, string $secondCardId)
     {
-        if (Uuid::isValid($firstCardId) || Uuid::isValid($secondCardId)) {
-            throw new InvalidArgumentException('ids need to be valid uuids');
-        }
+        $this->idsAreValidUuids($firstCardId, $secondCardId);
+        $this->idsExist($firstCardId, $secondCardId);
     }
 
     private function containsDuplicateCard(Pair ...$pairs): bool
@@ -122,5 +128,64 @@ class Game
         }
 
         return $cards;
+    }
+
+    private function cardsMatch(string $firstCardId, string $secondCardId): bool
+    {
+        if (array_key_exists($firstCardId, $this->pairs) && $this->pairs[$firstCardId] === $secondCardId) {
+            return true;
+        }
+
+        $flipped = array_flip($this->pairs);
+
+        if (array_key_exists($firstCardId, $flipped) && $flipped[$firstCardId] === $secondCardId) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getPairedIds(Pair ...$pairs): array
+    {
+        $paired = [];
+        foreach ($pairs as $pair) {
+            [$firstCard, $secondCard] = $pair->getCards();
+            $paired[$firstCard->id()->__toString()] = $secondCard->id()->__toString();
+        }
+
+        return $paired;
+    }
+
+    private function idsAreValidUuids(string $firstCardId, string $secondCardId): void
+    {
+        if (!Uuid::isValid($firstCardId) || !Uuid::isValid($secondCardId)) {
+            throw new InvalidArgumentException('ids need to be valid uuids');
+        }
+    }
+
+    private function idsExist(string $firstCardId, string $secondCardId)
+    {
+        return array_key_exists($firstCardId, $this->cards) && array_key_exists($secondCardId, $this->cards);
+    }
+
+    private function removeFromUnmatched(string $firstCardId, string $secondCardId): void
+    {
+        unset($this->unmatchedCards[$firstCardId]);
+        unset($this->unmatchedCards[$secondCardId]);
+    }
+
+    private function addCardsToMatched(string $firstCardId, string $secondCardId)
+    {
+        $this->addCardToMatched($firstCardId);
+        $this->addCardToMatched($secondCardId);
+    }
+
+    private function addCardToMatched(string $cardId): void
+    {
+        $card = $this->cards[$cardId];
+        $this->matchedCards[$cardId] = $card;
     }
 }

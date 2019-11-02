@@ -120,10 +120,28 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(4);
         $game = new Game(...$pairs);
 
-        $this->assertCount(8, $game->cards());
+        $this->assertCount(8, $game->unmatchedCards());
         $this->assertSame($game->cards(), $game->unmatchedCards());
     }
 
+    public function test_matched_cards_contain_all_cards_after_game_is_finished(): void
+    {
+        $pairs = $this->createPairs(4);
+        $game = new Game(...$pairs);
+        foreach ($pairs as $pair) {
+            [$firstCard, $secondCard] = $pair->getCards();
+            $firstCardId = $firstCard->id()->__toString();
+            $secondCardId = $secondCard->id()->__toString();
+            $game->makeMove($firstCardId, $secondCardId);
+        }
+
+        $this->assertCount(8, $game->matchedCards());
+        $this->assertSame($game->cards(), $game->matchedCards());
+    }
+
+    /**
+     * @return Pair[]
+     */
     private function createPairs(int $numberOfPairs): array
     {
         $pairs = [];
