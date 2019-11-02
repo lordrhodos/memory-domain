@@ -2,10 +2,9 @@
 
 namespace Memory;
 
-use Memory\Card\Content\Content;
+use InvalidArgumentException;
 use Memory\Card\CardId;
 use Memory\Card\Card;
-use Ramsey\Uuid\UuidInterface;
 
 class Pair
 {
@@ -21,6 +20,9 @@ class Pair
 
     public function __construct(Card $firstCard, Card $secondCard)
     {
+        if (!$this->cardsAreUnique($firstCard, $secondCard)) {
+            throw new InvalidArgumentException('cards need to be unique');
+        }
         $this->firstCard = $firstCard;
         $this->secondCard = $secondCard;
     }
@@ -51,5 +53,10 @@ class Pair
     private function secondCardMatchesId(CardId $id): bool
     {
         return $this->secondCard->id() === $id;
+    }
+
+    private function cardsAreUnique(Card $firstCard, Card $secondCard)
+    {
+        return $firstCard->id()->__toString() !== $secondCard->id()->__toString();
     }
 }

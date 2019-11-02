@@ -2,6 +2,7 @@
 
 namespace Memory\Test;
 
+use InvalidArgumentException;
 use Memory\Card\CardId;
 use Memory\Card\Card;
 use Memory\Card\Content\ContentId;
@@ -19,6 +20,13 @@ class PairTest extends TestCase
     {
         $pair = $this->createPair();
         $this->assertInstanceOf(Pair::class, $pair);
+    }
+
+    public function test_cards_needs_to_be_unique(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('cards need to be unique');
+        $this->createPair(self::FIRST_CARD_ID, self::FIRST_CARD_ID);
     }
 
     public function test_cards_can_be_retrieved(): void
@@ -47,21 +55,6 @@ class PairTest extends TestCase
 
         $matches = $pair->matchesIds($firstId, $secondId);
         $this->assertTrue($matches);
-    }
-
-    public function test_matches_same_card_ids(): void
-    {
-        $pair = $this->createPair(self::FIRST_CARD_ID, self::FIRST_CARD_ID);
-        [$firstCard, $secondCard] = $pair->getCards();
-
-        $firstId = $firstCard->id();
-        $secondId = $secondCard->id();
-        $this->assertNotSame($firstId, $secondId);
-        $this->assertSame($firstCard->contentId()->__toString(), $secondCard->contentId()->__toString());
-
-        $matches = $pair->matchesIds($firstId, $secondId);
-        $this->assertTrue($matches);
-
     }
 
     private function createPair(string $firstId = self::FIRST_CARD_ID, string $secondId = self::SECOND_CARD_ID): Pair

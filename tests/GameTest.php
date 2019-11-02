@@ -88,11 +88,12 @@ class GameTest extends TestCase
 
     public function test_duplicate_cards_throw_exception(): void
     {
-        $pairs = $this->createPairsWithSameCard(4);
+        $pairs = $this->createPairs(2);
+        $duplicated = array_merge($pairs, $pairs);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('duplicate card detected');
-        new Game(...$pairs);
+        new Game(...$duplicated);
     }
 
     public function test_make_move_with_invalid_first_card_id_throws_exception(): void
@@ -116,20 +117,6 @@ class GameTest extends TestCase
         return $pairs;
     }
     
-    private function createPairsWithSameCard(int $numberOfPairs): array
-    {
-        $cardId = new CardId();
-        $contentId = new ContentId();
-        $content = new ImageContent($contentId, 'a card', 'foo');
-        $pairs = [];
-        for ($i = 0; $i < $numberOfPairs; $i++) {
-            $card = new Card($cardId, $content);
-            $pairs[] = new Pair($card, $card);
-        }
-
-        return $pairs;
-    }
-
     private function createUuid(): string
     {
         return Uuid::uuid4()->__toString();
