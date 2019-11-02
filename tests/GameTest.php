@@ -37,7 +37,7 @@ class GameTest extends TestCase
             new Game(...$pairs);
         } else {
             $game = new Game(...$pairs);
-            $this->assertSame($numberOfPairs * 2, $game->getNumberOfCards());
+            $this->assertSame($numberOfPairs * 2, $game->countCards());
         }
     }
 
@@ -83,7 +83,7 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(4);
         $game = new Game(...$pairs);
         $cards = $game->cards();
-        $this->assertCount($game->getNumberOfCards(), $cards);
+        $this->assertCount($game->countCards(), $cards);
     }
 
     public function test_duplicate_cards_throw_exception(): void
@@ -213,6 +213,27 @@ class GameTest extends TestCase
 
         $this->assertCount(8, $game->matchedCards());
         $this->assertSame($game->cards(), $game->matchedCards());
+    }
+
+    public function test_count_moves_raised_with_each_move(): void
+    {
+        $pairs = $this->createPairs(4);
+        $game = new Game(...$pairs);
+        $movesCount = 1;
+        foreach ($pairs as $pair) {
+            [$firstCard, $secondCard] = $pair->getCards();
+            $firstCardId = $firstCard->id()->__toString();
+            $secondCardId = $secondCard->id()->__toString();
+            $game->makeMove($firstCardId, $secondCardId);
+            $this->assertSame($movesCount++, $game->countMoves());
+        }
+    }
+
+    public function test_moves_count_is_zero_on_start(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+        $this->assertSame(0, $game->countMoves());
     }
 
     /**

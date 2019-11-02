@@ -8,8 +8,6 @@ use Ramsey\Uuid\Uuid;
 
 class Game
 {
-    private const DEFAULT_NUMBER_OF_CARDS = 16;
-
     /**
      * @var string[]
      */
@@ -30,6 +28,11 @@ class Game
      */
     private $unmatchedCards;
 
+    /**
+     * @var string[]
+     */
+    private $moves;
+
     public function __construct(Pair ...$pairs)
     {
         if (count($pairs) < 2) {
@@ -44,14 +47,10 @@ class Game
         $this->cards = $this->getCardsFromPairs(...$pairs);
         $this->matchedCards = [];
         $this->unmatchedCards = $this->cards;
+        $this->moves = [];
     }
 
-    public function getNumberOfCards(): int
-    {
-        return $this->countCards();
-    }
-
-    private function countCards(): int
+    public function countCards(): int
     {
         return $this->countPairs() * 2;
     }
@@ -59,6 +58,11 @@ class Game
     private function countPairs(): int
     {
         return count($this->pairs);
+    }
+
+    public function countMoves()
+    {
+        return count($this->moves);
     }
 
     /**
@@ -81,6 +85,7 @@ class Game
 
     public function makeMove(string $firstCardId, string $secondCardId): bool
     {
+        $this->logMove($firstCardId, $secondCardId);
         $this->validateCardIds($firstCardId, $secondCardId);
 
         if ($this->cardsMatch($firstCardId, $secondCardId)) {
@@ -214,5 +219,10 @@ class Game
     private function idExists(string $cardId)
     {
         return array_key_exists($cardId, $this->cards);
+    }
+
+    private function logMove(string $firstCardId, string $secondCardId): void
+    {
+        $this->moves[] = [$firstCardId, $secondCardId];
     }
 }
