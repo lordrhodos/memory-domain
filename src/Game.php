@@ -24,11 +24,6 @@ class Game
     private $matchedCards;
 
     /**
-     * @var Card[]
-     */
-    private $unmatchedCards;
-
-    /**
      * @var string[]
      */
     private $moves;
@@ -56,7 +51,6 @@ class Game
         $this->pairs = $this->getPairedIds(...$pairs);
         $this->cards = $this->getCardsFromPairs(...$pairs);
         $this->matchedCards = [];
-        $this->unmatchedCards = $this->cards;
         $this->moves = [];
     }
 
@@ -85,7 +79,7 @@ class Game
 
     public function unmatchedCards(): array
     {
-        return $this->unmatchedCards;
+        return array_diff($this->cards, $this->matchedCards);
     }
 
     public function makeMove(string $firstCardId, string $secondCardId): bool
@@ -97,7 +91,7 @@ class Game
         $this->validateCardIds($firstCardId, $secondCardId);
 
         if ($this->cardsMatch($firstCardId, $secondCardId)) {
-            $this->shiftCards($firstCardId, $secondCardId);
+            $this->addCardsToMatched($firstCardId, $secondCardId);
             if ($this->isLastMatch()) {
                 $this->stopTiming();
             }
@@ -197,12 +191,6 @@ class Game
         }
     }
 
-    private function removeCardsFromUnmatched(string $firstCardId, string $secondCardId): void
-    {
-        unset($this->unmatchedCards[$firstCardId]);
-        unset($this->unmatchedCards[$secondCardId]);
-    }
-
     private function addCardsToMatched(string $firstCardId, string $secondCardId)
     {
         $this->addCardToMatched($firstCardId);
@@ -215,15 +203,9 @@ class Game
         $this->matchedCards[$cardId] = $card;
     }
 
-    private function shiftCards(string $firstCardId, string $secondCardId): void
-    {
-        $this->removeCardsFromUnmatched($firstCardId, $secondCardId);
-        $this->addCardsToMatched($firstCardId, $secondCardId);
-    }
-
     private function idIsUnmatched(string $firstCardId): bool
     {
-        return array_key_exists($firstCardId, $this->unmatchedCards);
+        return !array_key_exists($firstCardId, $this->matchedCards);
     }
 
     private function idExists(string $cardId)
