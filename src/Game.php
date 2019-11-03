@@ -8,8 +8,6 @@ use Ramsey\Uuid\Uuid;
 
 class Game
 {
-    private const FINISHED = 'finished';
-
     /**
      * @var string[]
      */
