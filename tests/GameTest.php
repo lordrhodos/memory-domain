@@ -122,15 +122,8 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(2);
         $game = new Game(...$pairs);
 
-        $pair = $pairs[0];
-        [$firstCard, $secondCard] = $pair->getCards();
-        $firstId = $firstCard->id()->__toString();
-        $secondId = $secondCard->id()->__toString();
-
-        $secondPair = $pairs[1];
-        [$thirdCard, $fourthCard] = $secondPair->getCards();
-        $thirdId = $thirdCard->id()->__toString();
-        $fourthId = $fourthCard->id()->__toString();
+        [$firstId, $secondId] = $this->getIdsFromPairs($pairs[0]);
+        [$thirdId, $fourthId] = $this->getIdsFromPairs($pairs[1]);
 
         $success = $game->makeMove($firstId, $secondId);
         $this->assertTrue($success);
@@ -144,10 +137,7 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(2);
         $game = new Game(...$pairs);
 
-        $pair = current($pairs);
-        [$firstCard, $secondCard] = $pair->getCards();
-        $firstId = $firstCard->id()->__toString();
-        $secondId = $secondCard->id()->__toString();
+        [$firstId, $secondId] = $this->getIdsFromPairs($pairs[0]);
 
         $success = $game->makeMove($firstId, $secondId);
         $this->assertTrue($success);
@@ -162,15 +152,8 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(2);
         $game = new Game(...$pairs);
 
-        $firstPair = $pairs[0];
-        [$firstCard, $secondCard] = $firstPair->getCards();
-        $firstId = $firstCard->id()->__toString();
-        $secondId = $secondCard->id()->__toString();
-
-        $secondPair = $pairs[1];
-        [$thirdCard, $fourthCard] = $secondPair->getCards();
-        $thirdId = $thirdCard->id()->__toString();
-        $fourthId = $fourthCard->id()->__toString();
+        [$firstId, $secondId] = $this->getIdsFromPairs($pairs[0]);
+        [$thirdId, $fourthId] = $this->getIdsFromPairs($pairs[1]);
 
         $firstMismatch = $game->makeMove($firstId, $thirdId);
         $this->assertFalse($firstMismatch);
@@ -205,10 +188,8 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(4);
         $game = new Game(...$pairs);
         foreach ($pairs as $pair) {
-            [$firstCard, $secondCard] = $pair->getCards();
-            $firstCardId = $firstCard->id()->__toString();
-            $secondCardId = $secondCard->id()->__toString();
-            $game->makeMove($firstCardId, $secondCardId);
+            [$firstId, $secondId] = $this->getIdsFromPairs($pair);
+            $game->makeMove($firstId, $secondId);
         }
 
         $this->assertCount(8, $game->matchedCards());
@@ -221,10 +202,8 @@ class GameTest extends TestCase
         $game = new Game(...$pairs);
         $movesCount = 1;
         foreach ($pairs as $pair) {
-            [$firstCard, $secondCard] = $pair->getCards();
-            $firstCardId = $firstCard->id()->__toString();
-            $secondCardId = $secondCard->id()->__toString();
-            $game->makeMove($firstCardId, $secondCardId);
+            [$firstId, $secondId] = $this->getIdsFromPairs($pair);
+            $game->makeMove($firstId, $secondId);
             $this->assertSame($movesCount++, $game->countMoves());
         }
     }
@@ -234,6 +213,40 @@ class GameTest extends TestCase
         $pairs = $this->createPairs(2);
         $game = new Game(...$pairs);
         $this->assertSame(0, $game->countMoves());
+    }
+
+    public function test_running_time_is_null_on_start(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+        $this->assertIsFloat($game->timeSpent());
+        $this->assertSame(0.0, $game->timeSpent());
+    }
+
+    public function test_running_time_is_not_null_after_second_move(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+        $this->assertSame(0.0, $game->timeSpent());
+
+        [$firstId, $secondId] = $this->getIdsFromPairs($pairs[0]);
+        [$thirdId, $fourthId] = $this->getIdsFromPairs($pairs[1]);
+        $game->makeMove($firstId, $thirdId);
+        $game->makeMove($fourthId, $secondId);
+        $this->assertGreaterThan(0, $game->timeSpent());
+    }
+
+    public function test_running_time_is_not_null_after_game_is_finished(): void
+    {
+        $pairs = $this->createPairs(2);
+        $game = new Game(...$pairs);
+        $this->assertSame(0.0, $game->timeSpent());
+
+        [$firstId, $secondId] = $this->getIdsFromPairs($pairs[0]);
+        [$thirdId, $fourthId] = $this->getIdsFromPairs($pairs[1]);
+        $game->makeMove($firstId, $secondId);
+        $game->makeMove($thirdId, $fourthId);
+        $this->assertGreaterThan(0, $game->timeSpent());
     }
 
     /**
@@ -252,5 +265,14 @@ class GameTest extends TestCase
     private function createUuid(): string
     {
         return Uuid::uuid4()->__toString();
+    }
+
+    private function getIdsFromPairs(Pair $pair): array
+    {
+        [$firstCard, $secondCard] = $pair->getCards();
+        $firstCardId = $firstCard->id()->__toString();
+        $secondCardId = $secondCard->id()->__toString();
+
+        return [$firstCardId, $secondCardId];
     }
 }

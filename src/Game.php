@@ -8,6 +8,8 @@ use Ramsey\Uuid\Uuid;
 
 class Game
 {
+    private const FINISHED = 'finished';
+
     /**
      * @var string[]
      */
@@ -32,6 +34,16 @@ class Game
      * @var string[]
      */
     private $moves;
+
+    /**
+     * @var float
+     */
+    private $startedAt;
+
+    /**
+     * @var float
+     */
+    private $stoppedAt;
 
     public function __construct(Pair ...$pairs)
     {
@@ -85,12 +97,17 @@ class Game
 
     public function makeMove(string $firstCardId, string $secondCardId): bool
     {
+        if ($this->isFirstMove()) {
+            $this->startTiming();
+        }
         $this->logMove($firstCardId, $secondCardId);
         $this->validateCardIds($firstCardId, $secondCardId);
 
         if ($this->cardsMatch($firstCardId, $secondCardId)) {
             $this->shiftCards($firstCardId, $secondCardId);
-
+            if ($this->isLastMatch()) {
+                $this->stopTiming();
+            }
             return true;
         }
 
@@ -224,5 +241,44 @@ class Game
     private function logMove(string $firstCardId, string $secondCardId): void
     {
         $this->moves[] = [$firstCardId, $secondCardId];
+    }
+
+    public function timeSpent(): float
+    {
+        if ($this->startedAt === null) {
+            return 0.0;
+        }
+
+        if ($this->stoppedAt === null) {
+            return microtime(true) - $this->startedAt;
+        }
+
+        return $this->stoppedAt - $this->startedAt;
+    }
+
+    private function isFirstMove(): bool
+    {
+        return empty($this->moves);
+    }
+
+    private function startTiming()
+    {
+        $this->startedAt = microtime(true);
+    }
+
+    private function stopTiming()
+    {
+        $this->stoppedAt = microtime(true);
+    }
+
+    private function isLastMatch()
+    {
+        $matchedCardsCount = count($this->matchedCards);
+        $cardCount = count($this->cards);
+        if ($matchedCardsCount === $cardCount) {
+            return true;
+        }
+
+        return false;
     }
 }
