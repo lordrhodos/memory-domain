@@ -62,12 +62,7 @@ class Game
 
     public function countCards(): int
     {
-        return $this->countPairs() * 2;
-    }
-
-    private function countPairs(): int
-    {
-        return count($this->pairs);
+        return count($this->cards);
     }
 
     public function countMoves()
