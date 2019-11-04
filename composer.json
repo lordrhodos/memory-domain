@@ -8,6 +8,7 @@
             "email": "patrick@rodacker.de"
         }
     ],
+    "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {

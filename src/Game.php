@@ -164,7 +164,9 @@ class Game
         $paired = [];
         foreach ($pairs as $pair) {
             [$firstCard, $secondCard] = $pair->getCards();
-            $paired[$firstCard->id()->__toString()] = $secondCard->id()->__toString();
+            $firstId = $firstCard->id()->__toString();
+            $secondId = $secondCard->id()->__toString();
+            $paired[$firstId] = $secondId;
         }
 
         return $paired;
