@@ -28,25 +28,35 @@ class CardTest extends TestCase
 
     public function test_get_id_returns_valid_uuid(): void
     {
-        $contentId = new ContentId();
-        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
-
-        $cardId = new CardId();
-        $card = new Card($cardId, $content);
+        $card = $this->createCard();
 
         $this->assertTrue(Uuid::isValid($card->id()));
     }
 
     public function test_proxy_methods(): void
     {
-        $contentId = new ContentId();
-        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
-
-        $cardId = new CardId();
-        $card = new Card($cardId, $content);
+        $card = $this->createCard();
 
         $this->assertSame(self::TITLE, $card->title());
         $this->assertSame(self::CONTENT, $card->content());
         $this->assertSame(ContentTypes::COLOUR, $card->contentType());
+    }
+
+    public function test_clone_creates_a_new_card_id(): void
+    {
+        $card = $this->createCard();
+        $cloned = clone $card;
+
+        $this->assertNotEquals($card->id(), $cloned->id());
+    }
+
+    private function createCard(): Card
+    {
+        $contentId = new ContentId();
+        $content = new ColourContent($contentId, self::TITLE, self::CONTENT);
+
+        $cardId = new CardId();
+
+        return new Card($cardId, $content);
     }
 }

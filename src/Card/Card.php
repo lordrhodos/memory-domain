@@ -48,4 +48,9 @@ class Card implements CardContract
     {
         return $this->content->type();
     }
+
+    public function __clone()
+    {
+        $this->id = new CardId();
+    }
 }
