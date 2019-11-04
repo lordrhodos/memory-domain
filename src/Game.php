@@ -11,7 +11,7 @@ class Game
     /**
      * @var string[]
      */
-    private $pairs;
+    private $pairedIds;
 
     /**
      * @var Card[]
@@ -48,7 +48,7 @@ class Game
             throw new InvalidArgumentException('duplicate card detected');
         }
 
-        $this->pairs = $this->getPairedIds(...$pairs);
+        $this->pairedIds = $this->getPairedIds(...$pairs);
         $this->cards = $this->getCardsFromPairs(...$pairs);
         $this->matchedCards = [];
         $this->moves = [];
@@ -143,11 +143,11 @@ class Game
 
     private function cardsMatch(string $firstCardId, string $secondCardId): bool
     {
-        if (array_key_exists($firstCardId, $this->pairs) && $this->pairs[$firstCardId] === $secondCardId) {
+        if (array_key_exists($firstCardId, $this->pairedIds) && $this->pairedIds[$firstCardId] === $secondCardId) {
             return true;
         }
 
-        $flipped = array_flip($this->pairs);
+        $flipped = array_flip($this->pairedIds);
 
         if (array_key_exists($firstCardId, $flipped) && $flipped[$firstCardId] === $secondCardId) {
             return true;
